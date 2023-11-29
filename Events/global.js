@@ -5,6 +5,7 @@ import {
   clearHighlight,
   selfHighlight,
   clearPreviousSelfHighlight,
+  moveElement,
 } from "../Render/main.js";
 
 // highlighted or not => state
@@ -13,11 +14,27 @@ let highlight_state = false;
 // current highlighted square state
 let selfHighlightState = null;
 
+// in move state or not
+let moveState = null;
+
 function whitePawnClick({ piece }) {
+  // if clicked on same element twice
+  if (piece == selfHighlightState) {
+    console.log("hello");
+
+    clearPreviousSelfHighlight(selfHighlightState);
+    selfHighlightState = null;
+    clearHighlight();
+    return;
+  }
+
   // highlight clicked element
   clearPreviousSelfHighlight(selfHighlightState);
   selfHighlight(piece);
   selfHighlightState = piece;
+
+  // add piece as move state
+  moveState = piece;
 
   const current_pos = piece.current_position;
   const flatArray = globalState.flat();
@@ -51,6 +68,27 @@ function GlobalEvent() {
       const square = flatArray.find((el) => el.id == clickId);
       if (square.piece.piece_name === "WHITE_PAWN") {
         whitePawnClick(square);
+      }
+    } else {
+      const childElementsOfclickedEl = Array.from(event.target.childNodes);
+
+      if (
+        childElementsOfclickedEl.length == 1 ||
+        event.target.localName == "span"
+      ) {
+        if (event.target.localName == "span") {
+          const id = event.target.parentNode.id;
+          moveElement(moveState, id);
+          moveState = null;
+        } else {
+          const id = event.target.id;
+          moveElement(moveState, id);
+          moveState = null;
+        }
+      } else {
+        // clear highlights
+        clearHighlight();
+        clearPreviousSelfHighlight(selfHighlightState);
       }
     }
   });

@@ -2,8 +2,32 @@ import * as piece from "../Data/pieces.js";
 import { ROOT_DIV } from "../Helper/constants.js";
 import { globalState } from "../index.js";
 
+// move element to square with id
+function moveElement(piece, id) {
+  const flatData = globalState.flat();
+
+  flatData.forEach((el) => {
+    if (el.id == piece.current_position) {
+      delete el.piece;
+    }
+
+    if (el.id == id) {
+      el.piece = piece;
+    }
+  });
+
+  clearHighlight();
+
+  const previousPiece = document.getElementById(piece.current_position);
+  previousPiece.classList.remove("highlightYellow");
+  const currentPiece = document.getElementById(id);
+  currentPiece.innerHTML = previousPiece.innerHTML;
+  previousPiece.innerHTML = "";
+
+  piece.current_position = id;
+}
+
 function clearPreviousSelfHighlight(piece) {
-  console.log(piece);
   if (piece) {
     document
       .getElementById(piece.current_position)
@@ -12,7 +36,6 @@ function clearPreviousSelfHighlight(piece) {
 }
 
 function selfHighlight(piece) {
-  console.log(document.getElementById(piece.current_position));
   document
     .getElementById(piece.current_position)
     .classList.add("highlightYellow");
@@ -141,4 +164,5 @@ export {
   clearHighlight,
   selfHighlight,
   clearPreviousSelfHighlight,
+  moveElement,
 };
