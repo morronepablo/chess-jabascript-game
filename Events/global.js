@@ -1,15 +1,45 @@
 import { ROOT_DIV } from "../Helper/constants.js";
 import { globalState } from "../index.js";
+import {
+  renderHighlight,
+  clearHighlight,
+  selfHighlight,
+  clearPreviousSelfHighlight,
+} from "../Render/main.js";
+
+// highlighted or not => state
+let highlight_state = false;
+
+// current highlighted square state
+let selfHighlightState = null;
 
 function whitePawnClick({ piece }) {
+  // highlight clicked element
+  clearPreviousSelfHighlight(selfHighlightState);
+  selfHighlight(piece);
+  selfHighlightState = piece;
+
   const current_pos = piece.current_position;
+  const flatArray = globalState.flat();
   //on initial position
   if (current_pos[1] == "2") {
-    const hightlightSquareIds = [
+    const highlightSquareIds = [
       `${current_pos[0]}${Number(current_pos[1]) + 1}`,
       `${current_pos[0]}${Number(current_pos[1]) + 2}`,
     ];
-    console.log(hightlightSquareIds);
+
+    // clear board for any previous highlight
+    clearHighlight();
+
+    highlightSquareIds.forEach((highlight) => {
+      globalState.forEach((row) => {
+        row.forEach((element) => {
+          if (element.id == highlight) {
+            element.highlight(true);
+          }
+        });
+      });
+    });
   }
 }
 
