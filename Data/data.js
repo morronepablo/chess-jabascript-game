@@ -2,17 +2,12 @@ import { renderHighlight } from "../Render/main.js";
 import { globalState } from "../index.js";
 
 function Greet() {
-  alert("Hello, word");
+  alert("Hello, World");
 }
 
 // for each square
 function Square(color, id, piece) {
-  const highlight = function () {
-    renderHighlight(this.id);
-    this.highlighted = true;
-  };
-
-  return { color, id, piece, highlight };
+  return { color, id, piece };
 }
 
 function SquareRow(rowId) {
