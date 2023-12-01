@@ -354,10 +354,27 @@ function giveKnightHighlightIds(id) {
   return [...top(), ...right(), ...bottom(), ...left()];
 }
 
+// function to give highlight ids for queen
+function giveQueenHighlightIds(id) {
+  const rookMoves = giveRookHighlightIds(id);
+  const bishopMoves = giveBishopHighlightIds(id);
+  return {
+    left: rookMoves.left,
+    right: rookMoves.right,
+    top: rookMoves.top,
+    bottom: rookMoves.bottom,
+    topLeft: bishopMoves.topLeft,
+    topRight: bishopMoves.topRight,
+    bottomLeft: bishopMoves.bottomLeft,
+    bottomRight: bishopMoves.bottomRight,
+  };
+}
+
 export {
   checkPieceOfOpponentOnElement,
   checkSquareCaptureId,
   giveRookHighlightIds,
+  giveQueenHighlightIds,
   giveKnightHighlightIds,
   checkWeatherPieceExistsOrNot,
   giveBishopHighlightIds,
