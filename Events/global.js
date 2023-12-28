@@ -1,139 +1,25 @@
-import { giveBishopHighlightIds, giveRookCapturesIds } from "../Helper/commonHelper.js";
+import {
+  giveBishopHighlightIds,
+  giveRookCapturesIds,
+} from "../Helper/commonHelper.js";
 import { checkSquareCaptureId } from "../Helper/commonHelper.js";
 import { checkPieceOfOpponentOnElement } from "../Helper/commonHelper.js";
 import { giveKingCaptureIds } from "../Helper/commonHelper.js";
 import { giveQueenCapturesIds } from "../Helper/commonHelper.js";
 import { checkWeatherPieceExistsOrNot } from "../Helper/commonHelper.js";
-import { giveRookHighlightIds, giveBishopCaptureIds } from "../Helper/commonHelper.js";
-import { giveKnightCaptureIds } from "../Helper/commonHelper.js";
-import { giveKingHighlightIds, giveKnightHighlightIds } from "../Helper/commonHelper.js";
+import { giveRookHighlightIds } from "../Helper/commonHelper.js";
+import { giveKnightHighlightIds } from "../Helper/commonHelper.js";
 import { giveQueenHighlightIds } from "../Helper/commonHelper.js";
 import { ROOT_DIV } from "../Helper/constants.js";
 import { clearHightlight } from "../Render/main.js";
 import { selfHighlight } from "../Render/main.js";
 import { globalStateRender } from "../Render/main.js";
 import { globalState, keySquareMapper } from "../index.js";
-import { globalPiece } from "../Render/main.js";
+
+// import { clearPreviousSelfHighlight } from "../Render/main.js";
 
 // hightlighted or not => state
 let hightlight_state = false;
-let inTurn = "white";
-let whoInCheck = null;
-
-function changeTurn(){
-  inTurn = inTurn === "white" ? "black" : "white";
-}
-
-function checkForCheck(){
-
-  if(inTurn === "black"){
-      const whiteKingCurrentPosition = globalPiece.white_king.current_position;
-      const knight_1 =  globalPiece.black_knight_1.current_position;
-      const knight_2 =  globalPiece.black_knight_2.current_position;
-      const king =  globalPiece.black_king.current_position;
-      const bishop_1 = globalPiece.black_bishop_1.current_position;
-      const bishop_2 = globalPiece.black_bishop_2.current_position;
-      const rook_1 = globalPiece.black_rook_1.current_position;
-      const rook_2 = globalPiece.black_rook_2.current_position;
-      const queen = globalPiece.black_queen.current_position;
-
-      let finalCheckList = [];
-      finalCheckList.push(giveKnightCaptureIds(knight_1, inTurn));
-      finalCheckList.push(giveKnightCaptureIds(knight_2, inTurn));
-      finalCheckList.push(giveKingCaptureIds(king, inTurn));
-      finalCheckList.push(giveBishopCaptureIds(bishop_1, inTurn));
-      finalCheckList.push(giveBishopCaptureIds(bishop_2, inTurn));
-      finalCheckList.push(giveRookCapturesIds(rook_1,inTurn));
-      finalCheckList.push(giveRookCapturesIds(rook_2,inTurn));
-      finalCheckList.push(giveQueenCapturesIds(queen,inTurn));
-
-      finalCheckList = finalCheckList.flat();
-      const checkOrNot = finalCheckList.find((element) => element === whiteKingCurrentPosition);
-
-      if(checkOrNot){
-        whoInCheck = "white";
-      }
-      
-    } else {
-      const blackKingCurrentPosition = globalPiece.black_king.current_position;
-      const knight_1 =  globalPiece.white_knight_1.current_position;
-      const knight_2 =  globalPiece.white_knight_2.current_position;
-      const king =  globalPiece.white_king.current_position;
-      const bishop_1 = globalPiece.white_bishop_1.current_position;
-      const bishop_2 = globalPiece.white_bishop_2.current_position;
-      const rook_1 = globalPiece.white_rook_1.current_position;
-      const rook_2 = globalPiece.white_rook_2.current_position;
-      const queen = globalPiece.white_queen.current_position;
-
-      let finalCheckList = [];
-      finalCheckList.push(giveKnightCaptureIds(knight_1, inTurn));
-      finalCheckList.push(giveKnightCaptureIds(knight_2, inTurn));
-      finalCheckList.push(giveKingCaptureIds(king, inTurn));
-      finalCheckList.push(giveBishopCaptureIds(bishop_1, inTurn));
-      finalCheckList.push(giveBishopCaptureIds(bishop_2, inTurn));
-      finalCheckList.push(giveRookCapturesIds(rook_1,inTurn));
-      finalCheckList.push(giveRookCapturesIds(rook_2,inTurn));
-      finalCheckList.push(giveQueenCapturesIds(queen,inTurn));
-
-      finalCheckList = finalCheckList.flat();
-      const checkOrNot = finalCheckList.find((element) => element === blackKingCurrentPosition);
-
-      if(checkOrNot){
-        whoInCheck = "black";
-      }
-
-  }
-}
-
-function captureInTurn(square){
-  const piece = square.piece;
-
-  if (piece == selfHighlightState) {
-    clearPreviousSelfHighlight(selfHighlightState);
-    clearHighlightLocal();
-    return;
-  }
-
-  if (square.captureHighlight) {
-    // movePieceFromXToY();
-    moveElement(selfHighlightState, piece.current_position);
-    clearPreviousSelfHighlight(selfHighlightState);
-    clearHighlightLocal();
-    return;
-  }
-
-  return;
-}
-
-// move element to square with id
-function moveElement(piece, id) {
-  
-
-  const flatData = globalState.flat();
-  flatData.forEach((el) => {
-    if (el.id == piece.current_position) {
-      delete el.piece;
-    }
-    if (el.id == id) {
-      if(el.piece)
-      {
-        el.piece.current_position = null;
-      }
-      el.piece = piece;
-    }
-  });
-  clearHightlight();
-  const previousPiece = document.getElementById(piece.current_position);
-  piece.current_position = null;
-  previousPiece.classList.remove("highlightYellow");
-  const currentPiece = document.getElementById(id);
-  currentPiece.innerHTML = previousPiece.innerHTML;
-  previousPiece.innerHTML = "";
-  piece.current_position = id;
-  checkForCheck();
-  changeTurn();
-  // globalStateRender();
-}
 
 // current self-highlighted square state
 let selfHighlightState = null;
@@ -200,13 +86,6 @@ function whitePawnClick(square) {
   }
 
   hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
-
-  hightlightSquareIds.forEach((hightlight) => {
-    const element = keySquareMapper[hightlight];
-    element.highlight = true;
-  });
-
-
 
   // capture id logic
   const col1 = `${String.fromCharCode(current_pos[0].charCodeAt(0) - 1)}${
@@ -278,13 +157,6 @@ function whiteBishopClick(square) {
 
   // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
   hightlightSquareIds = result.flat();
-
-  hightlightSquareIds.forEach((hightlight) => {
-    const element = keySquareMapper[hightlight];
-    element.highlight = true;
-  });
-
-
 
   let captureIds = [];
 
@@ -373,13 +245,6 @@ function blackBishopClick(square) {
   // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
   hightlightSquareIds = result.flat();
 
-  hightlightSquareIds.forEach((hightlight) => {
-    const element = keySquareMapper[hightlight];
-    element.highlight = true;
-  });
-
-
-
   let captureIds = [];
 
   for (let index = 0; index < temp.length; index++) {
@@ -466,13 +331,6 @@ function blackRookClick(square) {
 
   // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
   hightlightSquareIds = result.flat();
-
-  hightlightSquareIds.forEach((hightlight) => {
-    const element = keySquareMapper[hightlight];
-    element.highlight = true;
-  });
-
-
 
   let captureIds = [];
 
@@ -561,12 +419,6 @@ function whiteRookClick(square) {
   // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
   hightlightSquareIds = result.flat();
 
-  hightlightSquareIds.forEach((hightlight) => {
-    const element = keySquareMapper[hightlight];
-    element.highlight = true;
-  });
-
-
   let captureIds = [];
 
   for (let index = 0; index < temp.length; index++) {
@@ -637,7 +489,6 @@ function whiteKnightClick(square) {
   let hightlightSquareIds = giveKnightHighlightIds(current_pos);
   // const { bottom, top, right, left } = hightlightSquareIds;
   // let temp = [];
-
 
   // let result = [];
   // result.push(checkSquareCaptureId(bottom));
@@ -736,7 +587,6 @@ function blackKnightClick(square) {
   // console.log(hightlightSquareIds);
   // let temp = [];
 
-
   // let result = [];
   // result.push(checkSquareCaptureId(bottom));
   // result.push(checkSquareCaptureId(top));
@@ -761,8 +611,6 @@ function blackKnightClick(square) {
     const element = keySquareMapper[hightlight];
     element.highlight = true;
   });
-
- 
 
   let captureIds = [];
 
@@ -834,7 +682,16 @@ function whiteQueenClick(square) {
   let hightlightSquareIds = giveQueenHighlightIds(current_pos);
   let temp = [];
 
-  const { bottomLeft, topLeft, bottomRight, topRight,top, right, left, bottom } = hightlightSquareIds;
+  const {
+    bottomLeft,
+    topLeft,
+    bottomRight,
+    topRight,
+    top,
+    right,
+    left,
+    bottom,
+  } = hightlightSquareIds;
 
   let result = [];
   result.push(checkSquareCaptureId(bottomLeft));
@@ -863,8 +720,6 @@ function whiteQueenClick(square) {
     const element = keySquareMapper[hightlight];
     element.highlight = true;
   });
-
-
 
   let captureIds = [];
 
@@ -936,7 +791,120 @@ function whiteKingClick(square) {
   let hightlightSquareIds = giveKingHighlightIds(current_pos);
   let temp = [];
 
-  const { bottomLeft, topLeft, bottomRight, topRight,top, right, left, bottom } = hightlightSquareIds;
+  const {
+    bottomLeft,
+    topLeft,
+    bottomRight,
+    topRight,
+    top,
+    right,
+    left,
+    bottom,
+  } = hightlightSquareIds;
+
+  let result = [];
+  result.push(checkSquareCaptureId(bottomLeft));
+  result.push(checkSquareCaptureId(topLeft));
+  result.push(checkSquareCaptureId(bottomRight));
+  result.push(checkSquareCaptureId(topRight));
+  result.push(checkSquareCaptureId(top));
+  result.push(checkSquareCaptureId(right));
+  result.push(checkSquareCaptureId(bottom));
+  result.push(checkSquareCaptureId(left));
+
+  // insert into temp
+  temp.push(bottomLeft);
+  temp.push(topLeft);
+  temp.push(bottomRight);
+  temp.push(topRight);
+  temp.push(top);
+  temp.push(right);
+  temp.push(bottom);
+  temp.push(left);
+
+  // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
+  hightlightSquareIds = result.flat();
+
+  let captureIds = [];
+
+  for (let index = 0; index < temp.length; index++) {
+    const arr = temp[index];
+
+    for (let j = 0; j < arr.length; j++) {
+      const element = arr[j];
+
+      let checkPieceResult = checkWeatherPieceExistsOrNot(element);
+      if (
+        checkPieceResult &&
+        checkPieceResult.piece &&
+        checkPieceResult.piece.piece_name.toLowerCase().includes("white")
+      ) {
+        break;
+      }
+
+      if (checkPieceOfOpponentOnElement(element, "white")) {
+        break;
+      }
+    }
+  }
+
+  // let captureIds = [col1, col2];
+  // console.log(captureIds);
+  // // captureIds = checkSquareCaptureId(captureIds);
+
+  // captureIds.forEach((element) => {
+  //   checkPieceOfOpponentOnElement(element, "white");
+  // });
+
+  globalStateRender();
+}
+
+// white king event
+function whiteKingClick(square) {
+  const piece = square.piece;
+
+  if (piece == selfHighlightState) {
+    clearPreviousSelfHighlight(selfHighlightState);
+    clearHighlightLocal();
+    return;
+  }
+
+  if (square.captureHighlight) {
+    // movePieceFromXToY();
+    moveElement(selfHighlightState, piece.current_position);
+    clearPreviousSelfHighlight(selfHighlightState);
+    clearHighlightLocal();
+    return;
+  }
+
+  // clear all highlights
+  clearPreviousSelfHighlight(selfHighlightState);
+  clearHighlightLocal();
+
+  // highlighting logic
+  selfHighlight(piece);
+  hightlight_state = true;
+  selfHighlightState = piece;
+
+  // add piece as move state
+  moveState = piece;
+
+  const current_pos = piece.current_position;
+  const flatArray = globalState.flat();
+
+  let hightlightSquareIds = giveKingHighlightIds(current_pos);
+  let temp = [];
+
+  const {
+    bottomLeft,
+    topLeft,
+    bottomRight,
+    topRight,
+    top,
+    right,
+    left,
+    bottom,
+  } = hightlightSquareIds;
 
   let result = [];
   result.push(checkSquareCaptureId(bottomLeft));
@@ -965,8 +933,6 @@ function whiteKingClick(square) {
     const element = keySquareMapper[hightlight];
     element.highlight = true;
   });
-
-
 
   let captureIds = [];
 
@@ -1036,7 +1002,16 @@ function blackKingClick(square) {
   let hightlightSquareIds = giveKingHighlightIds(current_pos);
   let temp = [];
 
-  const { bottomLeft, topLeft, bottomRight, topRight,top, right, left, bottom } = hightlightSquareIds;
+  const {
+    bottomLeft,
+    topLeft,
+    bottomRight,
+    topRight,
+    top,
+    right,
+    left,
+    bottom,
+  } = hightlightSquareIds;
 
   let result = [];
   result.push(checkSquareCaptureId(bottomLeft));
@@ -1066,7 +1041,113 @@ function blackKingClick(square) {
     element.highlight = true;
   });
 
+  let captureIds = [];
 
+  for (let index = 0; index < temp.length; index++) {
+    const arr = temp[index];
+
+    for (let j = 0; j < arr.length; j++) {
+      const element = arr[j];
+
+      let checkPieceResult = checkWeatherPieceExistsOrNot(element);
+      if (
+        checkPieceResult &&
+        checkPieceResult.piece &&
+        checkPieceResult.piece.piece_name.toLowerCase().includes("black")
+      ) {
+        break;
+      }
+
+      if (checkPieceOfOpponentOnElement(element, "black")) {
+        break;
+      }
+    }
+  }
+
+  // let captureIds = [col1, col2];
+  // console.log(captureIds);
+  // // captureIds = checkSquareCaptureId(captureIds);
+
+  // captureIds.forEach((element) => {
+  //   checkPieceOfOpponentOnElement(element, "white");
+  // });
+
+  globalStateRender();
+}
+
+// black king event
+function blackKingClick(square) {
+  const piece = square.piece;
+
+  if (piece == selfHighlightState) {
+    clearPreviousSelfHighlight(selfHighlightState);
+    clearHighlightLocal();
+    return;
+  }
+
+  if (square.captureHighlight) {
+    // movePieceFromXToY();
+    moveElement(selfHighlightState, piece.current_position);
+    clearPreviousSelfHighlight(selfHighlightState);
+    clearHighlightLocal();
+    return;
+  }
+
+  // clear all highlights
+  clearPreviousSelfHighlight(selfHighlightState);
+  clearHighlightLocal();
+
+  // highlighting logic
+  selfHighlight(piece);
+  hightlight_state = true;
+  selfHighlightState = piece;
+
+  // add piece as move state
+  moveState = piece;
+
+  const current_pos = piece.current_position;
+
+  let hightlightSquareIds = giveKingHighlightIds(current_pos);
+  let temp = [];
+
+  const {
+    bottomLeft,
+    topLeft,
+    bottomRight,
+    topRight,
+    top,
+    right,
+    left,
+    bottom,
+  } = hightlightSquareIds;
+
+  let result = [];
+  result.push(checkSquareCaptureId(bottomLeft));
+  result.push(checkSquareCaptureId(topLeft));
+  result.push(checkSquareCaptureId(bottomRight));
+  result.push(checkSquareCaptureId(topRight));
+  result.push(checkSquareCaptureId(top));
+  result.push(checkSquareCaptureId(right));
+  result.push(checkSquareCaptureId(bottom));
+  result.push(checkSquareCaptureId(left));
+
+  // insert into temp
+  temp.push(bottomLeft);
+  temp.push(topLeft);
+  temp.push(bottomRight);
+  temp.push(topRight);
+  temp.push(top);
+  temp.push(right);
+  temp.push(bottom);
+  temp.push(left);
+
+  // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
+  hightlightSquareIds = result.flat();
+
+  hightlightSquareIds.forEach((hightlight) => {
+    const element = keySquareMapper[hightlight];
+    element.highlight = true;
+  });
 
   let captureIds = [];
 
@@ -1138,7 +1219,16 @@ function blackQueenClick(square) {
   let hightlightSquareIds = giveQueenHighlightIds(current_pos);
   let temp = [];
 
-  const { bottomLeft, topLeft, bottomRight, topRight,top, right, left, bottom } = hightlightSquareIds;
+  const {
+    bottomLeft,
+    topLeft,
+    bottomRight,
+    topRight,
+    top,
+    right,
+    left,
+    bottom,
+  } = hightlightSquareIds;
 
   let result = [];
   result.push(checkSquareCaptureId(bottomLeft));
@@ -1162,13 +1252,6 @@ function blackQueenClick(square) {
 
   // hightlightSquareIds = checkSquareCaptureId(hightlightSquareIds);
   hightlightSquareIds = result.flat();
-
-  hightlightSquareIds.forEach((hightlight) => {
-    const element = keySquareMapper[hightlight];
-    element.highlight = true;
-  });
-
-
 
   let captureIds = [];
 
@@ -1257,8 +1340,6 @@ function blackPawnClick(square) {
     element.highlight = true;
   });
 
-
-
   // capture logic id
   const col1 = `${String.fromCharCode(current_pos[0].charCodeAt(0) - 1)}${
     Number(current_pos[1]) - 1
@@ -1294,56 +1375,33 @@ function GlobalEvent() {
   ROOT_DIV.addEventListener("click", function (event) {
     if (event.target.localName === "img") {
       const clickId = event.target.parentNode.id;
-    
-      const square = keySquareMapper[clickId];      
-
-      if((square.piece.piece_name.includes("WHITE") && inTurn === "black")
-      || (square.piece.piece_name.includes("BLACK") && inTurn === "white")){
-        captureInTurn(square);
-        return;
-      }
-
+      // const flatArray = globalState.flat();
+      // const square = flatArray.find((el) => el.id == clickId);
+      const square = keySquareMapper[clickId];
       if (square.piece.piece_name == "WHITE_PAWN") {
-        if(inTurn == "white")
-         whitePawnClick(square);
+        whitePawnClick(square);
       } else if (square.piece.piece_name == "BLACK_PAWN") {
-        if(inTurn == "black")
         blackPawnClick(square);
       } else if (square.piece.piece_name == "WHITE_BISHOP") {
-         if(inTurn == "white")
         whiteBishopClick(square);
       } else if (square.piece.piece_name == "BLACK_BISHOP") {
-        if(inTurn == "black")
         blackBishopClick(square);
       } else if (square.piece.piece_name == "BLACK_ROOK") {
-        if(inTurn == "black")
         blackRookClick(square);
       } else if (square.piece.piece_name == "WHITE_ROOK") {
-         if(inTurn == "white")
         whiteRookClick(square);
       } else if (square.piece.piece_name == "WHITE_KNIGHT") {
-         if(inTurn == "white")
         whiteKnightClick(square);
-      }
-       else if (square.piece.piece_name == "BLACK_KNIGHT") {
-        if(inTurn == "black")
+      } else if (square.piece.piece_name == "BLACK_KNIGHT") {
         blackKnightClick(square);
-      }
-      else if (square.piece.piece_name == "WHITE_QUEEN") {
-         if(inTurn == "white")
+      } else if (square.piece.piece_name == "WHITE_QUEEN") {
         whiteQueenClick(square);
-      }
-      else if (square.piece.piece_name == "BLACK_QUEEN") {
-        if(inTurn == "black")
+      } else if (square.piece.piece_name == "BLACK_QUEEN") {
         blackQueenClick(square);
-      }
-      else if (square.piece.piece_name == "WHITE_KING") {
-         if(inTurn == "white")
-        whiteKingClick(square);
-      }
-      else if (square.piece.piece_name == "BLACK_KING") {
-        if(inTurn == "black")
-        blackKingClick(square);
+      } else if (square.piece.piece_name == "WHITE_KING") {
+        if (inTurn == "white") whiteKingClick(square);
+      } else if (square.piece.piece_name == "BLACK_KING") {
+        if (inTurn == "black") blackKingClick(square);
       }
     } else {
       const childElementsOfclickedEl = Array.from(event.target.childNodes);
