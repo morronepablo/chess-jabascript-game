@@ -25,26 +25,6 @@ function globalStateRender() {
   });
 }
 
-// move element to square with id
-function moveElement(piece, id) {
-  const flatData = globalState.flat();
-  flatData.forEach((el) => {
-    if (el.id == piece.current_position) {
-      delete el.piece;
-    }
-    if (el.id == id) {
-      el.piece = piece;
-    }
-  });
-  clearHightlight();
-  const previousPiece = document.getElementById(piece.current_position);
-  previousPiece.classList.remove("highlightYellow");
-  const currentPiece = document.getElementById(id);
-  currentPiece.innerHTML = previousPiece.innerHTML;
-  previousPiece.innerHTML = "";
-  piece.current_position = id;
-  // globalStateRender();
-}
 
 function selfHighlight(piece) {
   document
@@ -84,41 +64,41 @@ function initGameRender(data) {
       // render blackpawn
       if (square.id[1] == 7) {
         square.piece = piece.blackPawn(square.id);
-        globalPiece.black_pawn = square.piece;
+        globalPiece.black_pawn = square.piece
       }
 
       // render black rook
       if (square.id == "h8" || square.id == "a8") {
         square.piece = piece.blackRook(square.id);
-        if (globalPiece.black_rook_1) {
-          globalPiece.black_rook_2 = square.piece;
+        if(globalPiece.black_rook_1) {
+          globalPiece.black_rook_2 = square.piece
         } else {
-          globalPiece.black_rook_1 = square.piece;
+          globalPiece.black_rook_1 = square.piece
         }
       }
 
       // render black knight
       if (square.id == "b8" || square.id == "g8") {
         square.piece = piece.blackKnight(square.id);
-        if (globalPiece.black_knight_1) {
-          globalPiece.black_knight_2 = square.piece;
+        if(globalPiece.black_knight_1) {
+          globalPiece.black_knight_2 = square.piece
         } else {
-          globalPiece.black_knight_1 = square.piece;
+          globalPiece.black_knight_1 = square.piece
         }
       }
       // render black knight
       if (square.id == "c8" || square.id == "f8") {
         square.piece = piece.blackBishop(square.id);
-        if (globalPiece.black_bishop_1) {
-          globalPiece.black_bishop_2 = square.piece;
+        if(globalPiece.black_bishop_1) {
+          globalPiece.black_bishop_2 = square.piece
         } else {
-          globalPiece.black_bishop_1 = square.piece;
+          globalPiece.black_bishop_1 = square.piece
         }
       }
       // render black knight
       if (square.id == "d8") {
         square.piece = piece.blackQueen(square.id);
-        globalPiece.black_queen = square.piece;
+        globalPiece.black_queen = square.piece
       }
       // render black knight
       if (square.id == "e8") {
@@ -129,12 +109,12 @@ function initGameRender(data) {
       // render white pawn
       if (square.id[1] == 2) {
         square.piece = piece.whitePawn(square.id);
-        globalPiece.white_pawn = square.piece;
+        globalPiece.white_pawn = square.piece
       }
       // render white queen
       if (square.id == "d1") {
         square.piece = piece.whiteQueen(square.id);
-        globalPiece.white_queen = square.piece;
+        globalPiece.white_queen = square.piece
       }
 
       // render white king
@@ -146,30 +126,30 @@ function initGameRender(data) {
       // render white rook
       if (square.id == "h1" || square.id == "a1") {
         square.piece = piece.whiteRook(square.id);
-        if (globalPiece.white_rook_1) {
-          globalPiece.white_rook_2 = square.piece;
+        if(globalPiece.white_rook_1) {
+          globalPiece.white_rook_2 = square.piece
         } else {
-          globalPiece.white_rook_1 = square.piece;
+          globalPiece.white_rook_1 = square.piece
         }
       }
 
       // render black knight
       if (square.id == "b1" || square.id == "g1") {
         square.piece = piece.whiteKnight(square.id);
-        if (globalPiece.white_knight_1) {
-          globalPiece.white_knight_2 = square.piece;
+        if(globalPiece.white_knight_1) {
+          globalPiece.white_knight_2 = square.piece
         } else {
-          globalPiece.white_knight_1 = square.piece;
+          globalPiece.white_knight_1 = square.piece
         }
       }
 
       // render black bishop
       if (square.id == "c1" || square.id == "f1") {
         square.piece = piece.whiteBishop(square.id);
-        if (globalPiece.white_bishop_1) {
-          globalPiece.white_bishop_2 = square.piece;
+        if(globalPiece.white_bishop_1) {
+          globalPiece.white_bishop_2 = square.piece
         } else {
-          globalPiece.white_bishop_1 = square.piece;
+          globalPiece.white_bishop_1 = square.piece
         }
       }
 
@@ -213,5 +193,5 @@ export {
   clearHightlight,
   selfHighlight,
   globalStateRender,
-  globalPiece,
+  globalPiece
 };
